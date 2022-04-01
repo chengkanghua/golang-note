@@ -4,21 +4,35 @@ import (
 	"fmt"
 )
 
-type Person struct {
-	name   string
-	age    int8
-	dreams []string
+type Mover interface {
+	Move()
 }
 
-func (p *Person) SetDreams(dreams []string) {
-	p.dreams = dreams
+type Dog struct {
+	Name string
+}
+
+func (d Dog) Move() {
+	fmt.Println("狗会动")
+}
+
+type Car struct {
+	Brand string
+}
+
+func (c *Car) Move() {
+	fmt.Println("汽车在跑")
 }
 
 func main() {
-	p1 := Person{name: "小王子", age: 18}
-	data := []string{"吃饭", "睡觉", "打豆豆"}
-	p1.SetDreams(data)
+	var n Mover = &Dog{Name: "旺财"}
+	v, ok := n.(*Dog)
+	fmt.Println(v, ok)
+	if ok {
+		fmt.Println("类型断言成功")
+		v.Name = "富贵"
+	} else {
+		fmt.Println("类型断言失败")
+	}
 
-	data[0] = "不吃饭"
-	fmt.Println(p1.dreams)
 }
