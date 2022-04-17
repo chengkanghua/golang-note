@@ -1,0 +1,5 @@
+version: "v1.7"
+port: 8999
+
+app:
+  node: 1

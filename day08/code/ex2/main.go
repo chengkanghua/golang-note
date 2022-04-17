@@ -37,7 +37,8 @@ func genNumber() <-chan int64 {
 	go func() {
 		for {
 			// v := rand.Int63()
-			v := rand.Intn(9999) // int
+			// v := rand.Intn(9999) // int
+			v := rand.Int63()
 			select {
 			case jobChan <- int64(v):
 			default:
