@@ -34,7 +34,7 @@ var array2 = [3]int{1, 2, 3}
 
 - for range
 
-- ### 切片
+- ### 切片   
 
 切片:[]int、[]string、[]bool
 
@@ -458,7 +458,44 @@ var (
 func main() {
 	left := dispatchCoin()
 	fmt.Println("剩下：", left)
+    fmt.Println(distribution)
 }
+
+// dispatchCoin 按规则分金币，返回剩余的金币数
+func dispatchCoin() int {
+	// 1.依次给每个人(拿到每个人的名字)  // 0 Matthew  ...
+	for _, name := range users {
+		userNum := dispatchForUser(name)
+		// 3.登记每个人分了多少金币
+		distribution[name] = userNum
+		// 4.计算剩下的金币数
+		coins = coins - userNum
+	}
+	return coins
+}
+
+func dispatchForUser(name string) int {
+	// 2.按规则分金币（对名字判断规则）
+	// 2.1 记录下每个人分的金币数
+	userNum := 0
+
+	for _, c := range name { // Matthew
+		switch c {
+		case 'e', 'E':
+			userNum = userNum + 1
+		case 'i', 'I':
+			userNum = userNum + 2
+		case 'o', 'O':
+			userNum = userNum + 3
+		case 'u', 'U':
+			userNum = userNum + 4
+		}
+	}
+	return userNum
+}
+
+
+
 
 ```
 

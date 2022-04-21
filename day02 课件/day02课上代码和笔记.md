@@ -99,8 +99,8 @@ var c [10]string
 
 ```go
 var x = [3]int{1, 2, 3}
-var y = [...]bool{true, false, true}
-var z = [100]int{99:1}
+var y = [...]bool{true, false, true}  // ... 表示让编译器自行推断数组长度
+var z = [100]int{99:1}     // 索引位置99的值为1
 var zz = [...]int{99:1}
 ```
 

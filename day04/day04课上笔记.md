@@ -414,7 +414,7 @@ func demo5() {
 	stu4.age = 18 // Go语言中提供的语法糖，支持 结构体指针类型.属性 简写
 	fmt.Printf("%+v\n", stu4)
 
-	// var stu5 *Student // nil
+	// var stu5 *Student // nil   报错
 	// var stu5 = new(Student)
 	var stu5 = &Student{}
 	stu5.name = "jade" // (*nil).name =
@@ -455,7 +455,7 @@ func demo5() {
 	stu4.age = 18 // Go语言中提供的语法糖，支持 结构体指针类型.属性 简写
 	fmt.Printf("%+v\n", stu4)
 
-	// var stu5 *Student // nil
+	// var stu5 *Student // nil    报错
 	// var stu5 = new(Student)
 	var stu5 = &Student{}
 	stu5.name = "jade" // (*nil).name =
