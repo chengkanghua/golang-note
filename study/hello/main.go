@@ -1,16 +1,14 @@
 package main
 
-import (
-	"fmt"
-	"io/ioutil"
-)
+import "fmt"
 
-// bufio按行读取示例
 func main() {
-	context, err := ioutil.ReadFile("./src.txt")
-	if err != nil {
-		fmt.Println("read file failed, err: ", err)
-		return
+	ch := make(chan int, 1)
+	for i := 1; i <= 10; i++ {
+		select {
+		case x := <-ch:
+			fmt.Println(x)
+		case ch <- i:
+		}
 	}
-	fmt.Print(string(context))
 }

@@ -18,6 +18,7 @@ func reverseDemo() {
 	fmt.Println(x2)
 }
 
+// 结构体首字母小写 别的包导入是无法使用的， 但是下面的直接把值赋值过去的可以，
 type student struct {
 	Name string `json:"name"`
 	age  int    `json:"age"`
@@ -34,7 +35,7 @@ func jsonDemo() {
 		fmt.Println("json marshal failed, err:", err)
 		return
 	}
-	fmt.Printf("%s\n", b)
+	fmt.Printf("%s\n", b) //{"name":"杨俊"}  因为结构体age首字母小写，json包读不到所以解析不到
 }
 
 func main() {

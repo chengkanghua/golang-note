@@ -188,6 +188,81 @@ type Dreamer interface{
 
 
 
+```go
+package main
+
+import (
+	"fmt"
+	"io"
+	"os"
+)
+
+// 使用接口实现一个简单的日志库
+// 既能往终端输出也能往文件输出日志
+
+// log.Error()
+// log.Warning()
+// log.Info("...")
+
+type Log struct {
+	// Output os.Stdout // 标准输出
+	Output io.Writer // 日志文件
+}
+
+// NewLog 构造函数中指定要输出的地方
+// 需要传入一个output参数，告诉我将日志输出到哪里
+func NewLog(output io.Writer) *Log {
+	return &Log{
+		Output: output,
+	}
+}
+
+func (l *Log) Error(s string) {
+
+}
+
+func (l *Log) Warning(s string) {
+
+}
+
+func (l *Log) Info(s string) {
+	// 把要记录的日志信息s 输出
+	// 有可能会输出到 os.Stdout
+	// 有可能出输出到 os.File
+	// ....
+
+	// 我只需要写东西...
+	fmt.Fprintln(l.Output, s)
+
+}
+
+func main() {
+	// 往终端输出日志
+	// logger := NewLog(os.Stdout)
+	// 往文件里面输出日志
+	f, err := os.OpenFile("./app.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		fmt.Println("创建日志文件失败, err:", err)
+		return
+	}
+	defer f.Close() // 程序退出前关闭文件
+
+	logger := NewLog(f) // 把打开的文件对象传入构造函数
+
+	logger.Info("程序启动啦")
+
+	logger.Warning("感觉程序要出问题啦")
+	logger.Error("程序出错误啦")
+}
+
+// 1. 日志构造函数中可以指定日志级别 level
+// 2. error级别的日志还可以输出到另外一个文件 app.err.log
+// 3. 日志文件可以限制大小，最大500M,支持自动切割日志文件
+
+```
+
+
+
 ## 今日内容
 
 ### Error接口和错误处理
@@ -325,4 +400,132 @@ https://www.liwenzhou.com/posts/Go/13_reflect/
    }
    ```
 
-   
+
+
+
+答案：
+
+```go
+package main
+
+import (
+	"errors"
+	"fmt"
+	"io/ioutil"
+	"reflect"
+	"strconv"
+	"strings"
+)
+
+var (
+	NeedPtrErr       = errors.New("必须传入指针类型")
+	NeedStructPtrErr = errors.New("必须传入结构体指针类型")
+)
+
+type Student struct {
+	Name  string  `info:"name"`
+	Age   int     `info:"age"`
+	Score float64 `info:"score"`
+}
+
+// 从文件加载数据到Student结构体
+func loadStudentData(filename string, obj interface{}) error {
+	// 0，检查 obj interface{}
+	// obj必须是指针类型
+	// 如果不是，就返回错误
+	tInfo := reflect.TypeOf(obj)
+	vInfo := reflect.ValueOf(obj)
+	// tInfo.Name()  // 类型名称
+	// tInfo.Kind()  // 种类
+	if tInfo.Kind() != reflect.Ptr {
+		return NeedPtrErr
+	}
+	// obj必须是结构体指针
+	// 如果不是，就返回错误
+	// tInfo.Elem()  // 根据指针取到对应的值
+	if tInfo.Elem().Kind() != reflect.Struct {
+		return NeedStructPtrErr
+	}
+
+	// 1,一行行读取文件中的内容，解析键值对，读一行处理一行
+	// 1.1 读文件
+	b, err := ioutil.ReadFile(filename) // 文件不大的情况下
+	if err != nil {
+		fmt.Printf("打开文件失败，err：%v", err)
+		return err
+	}
+	// []byte -> string
+	s := string(b)
+	lines := strings.Split(s, "\n") // 按换行符分隔
+	for _, line := range lines {
+		if len(strings.TrimSpace(line)) == 0 {
+			continue // 跳过配置文件中的空行
+		}
+		// 按=分隔，拿到键值对
+		list := strings.Split(line, "=") // [""]
+		// 去掉首尾的空格
+		key := strings.TrimSpace(list[0])
+		value := strings.TrimSpace(list[1])
+		// 2，根据key 去结构体里找字段的 info tag == key
+		// 2.1 遍历结构体的所有字段
+		for i := 0; i < tInfo.Elem().NumField(); i++ {
+			field := tInfo.Elem().Field(i) // 拿到一个具体的结构体字段
+			// field.Name == key
+			if field.Tag.Get("info") == key {
+				// 说明我们找到了对应配置文件中的那个字段
+				// 3，找到后赋值
+				vField := vInfo.Elem().Field(i)
+				switch vField.Type().Kind() {
+				case reflect.String:
+					vField.SetString(value)
+				case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+					// 注意：value是字符串
+					// strconv.Atoi()  // string -> int
+					int64Value, err := strconv.ParseInt(value, 10, 64)
+					if err != nil {
+						return err
+					}
+					vField.SetInt(int64Value)
+				case reflect.Float32, reflect.Float64:
+					float64Value, err := strconv.ParseFloat(value, 64)
+					if err != nil {
+						return err
+					}
+					vField.SetFloat(float64Value)
+				}
+
+			}
+
+		}
+	}
+	return nil
+
+}
+
+func main() {
+
+	var stu Student
+	err := loadStudentData("info.txt", &stu)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Printf("%#v\n", stu)
+
+
+}
+
+```
+
+
+
+Info.txt
+
+```text
+name = 杨俊
+
+age=28
+
+score=99.5
+```
+

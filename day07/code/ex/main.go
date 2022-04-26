@@ -74,7 +74,7 @@ func loadStudentData(filename string, obj interface{}) error {
 	}
 	// []byte -> string
 	s := string(b)
-	lines := strings.Split(s, "\n")
+	lines := strings.Split(s, "\n") // 按换行符分隔
 	for _, line := range lines {
 		if len(strings.TrimSpace(line)) == 0 {
 			continue // 跳过配置文件中的空行
@@ -137,7 +137,7 @@ func main() {
 	// 转换失败n就是默认类型的零值
 	fmt.Println(n)
 
-	// 把字符串转换为int类型
+	// 把字符串直接转换为int类型
 	intValue, err := strconv.Atoi("123")
 	fmt.Println(intValue, err)
 	// 把int转为字符串
@@ -145,8 +145,7 @@ func main() {
 
 	// s := string(v)  // "D"  ascii码
 
-	s := strconv.Itoa(v)
-
+	s := strconv.Itoa(v)   // 数字68转换字符串
 	fmt.Printf("%#v\n", s) // "68"
 
 	s2 := fmt.Sprintf("%v", v) // "68"

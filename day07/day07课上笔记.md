@@ -148,6 +148,73 @@ fmt.Printf("%#v\n", s2)
 
 
 
+### 补充 反射调用方法
+
+```go
+package main
+
+import (
+	"errors"
+	"fmt"
+	"io/ioutil"
+	"reflect"
+	"strconv"
+	"strings"
+)
+
+var (
+	NeedPtrErr       = errors.New("必须传入指针类型")
+	NeedStructPtrErr = errors.New("必须传入结构体指针类型")
+)
+
+type Student struct {
+	Name  string  `info:"name"`
+	Age   int     `info:"age"`
+	Score float64 `info:"score"`
+}
+
+func (s Student) Study(title string) {
+	fmt.Printf("%s在学%s\n", s.Name, title)
+}
+
+func (s Student) Play(num int) {
+	fmt.Printf("%s玩了%d小时\n", s.Name, num)
+}
+
+func Do(obj interface{}, methodName string, arg interface{}) {
+	tInfo := reflect.TypeOf(obj)
+	vInfo := reflect.ValueOf(obj)
+
+	fmt.Println("方法数量：", tInfo.NumMethod()) // 看看结构体有多少方法
+	// 根据传入方法名去结构体里找对应的方法
+	m := vInfo.MethodByName(methodName)
+	if !m.IsValid() || m.IsNil() {
+		fmt.Println("调用方法失败")
+		return
+	}
+	// 进行方法调用
+	// 处理参数
+	argValue := reflect.ValueOf(arg)
+	m.Call([]reflect.Value{argValue})
+
+}
+
+
+
+func main() {
+
+	// 通过反射调用方法
+	Do(stu, "Study", "Go语言")
+	Do(stu, "Play", 2)
+
+}
+
+```
+
+
+
+
+
 ## 今日内容
 
 ### time包
@@ -191,6 +258,48 @@ GPM调度模型
 
 
 ![image-20220227162234393](day07课上笔记.assets/image-20220227162234393.png)
+
+
+
+```go
+package main
+
+import "fmt"
+
+func recv(c chan int) {
+	// ret := <-c
+	// fmt.Println("接收成功", ret)
+	/* 	for {
+		v, ok := <-c
+		if !ok {
+			fmt.Println("通道已关闭")
+			break
+		}
+		fmt.Printf("接收到值 v:%#v ok: %#v \n", v, ok)
+	} */
+	for v := range c {
+		fmt.Printf("接收到值 v:%#v", v)  // 这里为什么接收不到20，上面for循环却可以
+	}
+}
+
+func main() {
+	var ch1 chan int
+	// var ch2 chan bool
+	// var ch3 chan []int
+	fmt.Println(ch1) //<nil>
+
+	ch2 := make(chan int)
+	// ch3 := make(chan bool, 1) // // 声明一个缓冲区大小为1的通道
+	go recv(ch2)
+	ch2 <- 10 //把10发送到ch中 形成死锁，等待接收方才能发送成
+	ch2 <- 20
+	fmt.Println("发送成功")
+
+}
+
+```
+
+
 
 
 

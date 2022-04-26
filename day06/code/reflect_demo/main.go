@@ -57,10 +57,11 @@ func marshalDemo() {
 	// golang strconv.ParseInt 是将字符串转换为数字的函数
 	// 参数1 数字的字符串形式， 参数2 10进制 参数3 bit大小 也就是int64
 	intValue, _ := strconv.ParseInt(value, 10, 64)
-	fmt.Println(key, value)
+	// fmt.Println(key, value) //id 1234567
 
 	t := reflect.TypeOf(&o)
 	v := reflect.ValueOf(&o)
+	fmt.Println(t, v)
 	for i := 0; i < t.Elem().NumField(); i++ {
 		// t.Elem().Field(i)  // 字段
 		filed := t.Elem().Field(i)

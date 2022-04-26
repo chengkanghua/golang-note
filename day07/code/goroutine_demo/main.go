@@ -5,10 +5,11 @@ import (
 	"sync"
 )
 
+// 声明全局等待组变量
 var wg sync.WaitGroup
 
 func hello() {
-	defer wg.Done()
+	defer wg.Done() // 告知当前goroutine 完成
 	fmt.Println("hello")
 }
 
@@ -18,7 +19,7 @@ func hello2(i int) {
 }
 
 func f() {
-	wg.Add(5)
+	wg.Add(5) // 登记5个goroutine
 	for i := 0; i < 5; i++ {
 		go func(i int) {
 			fmt.Println(i)
@@ -51,7 +52,7 @@ func main() {
 
 	// fmt.Println("你好")
 	// // time.Sleep(time.Second)
-	// wg.Wait()
+	// wg.Wait()   // 等待所有登记的goroutine都结束
 
 	// f()
 	f2()

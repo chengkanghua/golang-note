@@ -21,20 +21,20 @@ func timeDemo() {
 
 // 时间间隔
 func durationDemo() {
-	// time.Duration // 时间间隔类型
+	// time.Duration // 时间间隔类型  time.Duration 表示1纳秒
 
 	time.Sleep(10 * time.Second) // sleep10秒
 
 	num := 5
-	// time.Sleep(num * time.Second)
-	time.Sleep(time.Duration(num) * time.Second)
+	// time.Sleep(num * time.Second) //不可以直接乘
+	time.Sleep(time.Duration(num) * time.Second) // 5秒  time.Duration(num)表示把数字强制转换成纳秒
 }
 
 func timeOp() {
 	now := time.Now()
 
 	t2 := now.Add(time.Hour) // 1小时之后
-	fmt.Println(t2.Sub(now)) // 60 * time.Minute
+	fmt.Println(t2.Sub(now)) // 60 * time.Minute   t2-当前时间=间隔时间1小时
 }
 
 func tickDemo() {
@@ -91,5 +91,5 @@ func main() {
 	// timeDemo()
 	// timeOp()
 	// formatDemo()
-	parseDemo("2022/10/7") // time.Parse("2022/10/7", "2006/01/02")
+	parseDemo("2022/10/07") // time.Parse("2022/10/7", "2006/01/02")
 }
