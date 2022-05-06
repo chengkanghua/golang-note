@@ -15,7 +15,7 @@ var db *sql.DB
 // initMySQL 初始化mysql连接
 func initMySQL() (err error) {
 	// dsn := "xxx"
-	dsn := "root:root1234@tcp(127.0.0.1:13306)/gogogo"
+	dsn := "root:123@tcp(10.211.55.6:13306)/gogogo"
 	db, err = sql.Open("mysql", dsn) // 不会真正的连接数据库
 	// defer db.Close()  // nil.Close()
 	if err != nil {

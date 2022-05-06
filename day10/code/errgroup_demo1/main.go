@@ -52,8 +52,8 @@ func main() {
 	// 	fmt.Println(err)
 	// }
 
-	// fetchUrlDemo2()
-	f3()
+	fetchUrlDemo2()
+	// f3()
 }
 
 // fetchUrlDemo2 使用errgroup并发获取url内容
