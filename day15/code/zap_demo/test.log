@@ -1,0 +1,8 @@
+{"level":"info","ts":1651981785.7792609,"msg":"日志信息","uid":18967553,"isLogin":true,"name":"杨俊","data":[1,2]}
+{"level":"info","time":"2022-05-08T12:04:42.490+0800","msg":"日志信息","uid":18967553,"isLogin":true,"name":"杨俊","data":[1,2]}
+{"level":"INFO","time":"2022-05-08T12:06:25.888+0800","msg":"日志信息","uid":18967553,"isLogin":true,"name":"杨俊","data":[1,2]}
+{"level":"INFO","time":"2022-05-08T12:08:48.215+0800","caller":"zap_demo/main.go:61","msg":"日志信息","uid":18967553,"isLogin":true,"name":"杨俊","data":[1,2]}
+{"level":"INFO","time":"2022-05-08T12:11:45.546+0800","caller":"zap_demo/main.go:68","msg":"日志信息","uid":18967553,"isLogin":true,"name":"杨俊","data":[1,2]}
+{"level":"INFO","time":"2022-05-08T12:11:45.546+0800","caller":"zap_demo/main.go:18","msg":"包装后的日志信息","timestamp":1651983105}
+{"level":"INFO","time":"2022-05-08T12:14:09.160+0800","caller":"runtime/proc.go:255","msg":"日志信息","uid":18967553,"isLogin":true,"name":"杨俊","data":[1,2]}
+{"level":"INFO","time":"2022-05-08T12:14:09.160+0800","caller":"zap_demo/main.go:78","msg":"包装后的日志信息","timestamp":1651983249}

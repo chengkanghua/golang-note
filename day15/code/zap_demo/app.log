@@ -1,0 +1,3 @@
+{"level":"INFO","time":"2022-05-08T14:54:47.789+0800","caller":"zap_demo/main.go:116","msg":"日志信息","uid":18967553,"isLogin":true,"name":"杨俊","data":[1,2]}
+{"level":"ERROR","time":"2022-05-08T14:54:47.789+0800","caller":"zap_demo/main.go:126","msg":"这是一条err日志","uid":18967553}
+{"level":"INFO","time":"2022-05-08T14:54:47.789+0800","caller":"zap_demo/main.go:19","msg":"包装后的日志信息","timestamp":1651992887}
