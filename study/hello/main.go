@@ -1,46 +1,59 @@
 package main
 
 import (
+	"errors"
 	"fmt"
+	"time"
 
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"github.com/dgrijalva/jwt-go"
 )
 
-// UserInfo 用户信息
-type UserInfo struct {
-	ID     uint
-	Name   string
-	Gender string
-	Hobby  string
+type MyClaims struct {
+	Uid      int64  `json:"uid"`
+	Username string `json:"username"`
+	jwt.StandardClaims
+}
+
+const TokenExpireDuration = time.Hour * 2
+
+var MySecret = []byte("夏天")
+
+func GenToken(uid int64, username string) (string, error) {
+	c := MyClaims{
+		uid,
+		username,
+		jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(TokenExpireDuration).Unix(),
+			Issuer:    "todo",
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, c)
+	return token.SignedString(MySecret)
+}
+
+func ParseToken(tokenString string) (*MyClaims, error) {
+	//解析token
+	token, err := jwt.ParseWithClaims(tokenString, &MyClaims{}, func(token *jwt.Token) (i interface{}, err error) {
+		return MySecret, nil // 加盐的字符串通过这个函数返回
+	})
+	if err != nil {
+		return nil, err
+	}
+	if claims, ok := token.Claims.(*MyClaims); ok && token.Valid {
+		return claims, nil
+	}
+	return nil, errors.New("invalid token")
 }
 
 func main() {
-	db, err := gorm.Open("mysql", "root:123@(10.211.55.6:3306)/db1?charset=utf8mb4&parseTime=True&loc=Local")
+	token, err := GenToken(1, "eric")
 	if err != nil {
-		panic(err)
+		fmt.Println("Gentoken failed")
 	}
-	defer db.Close()
-
-	// 自动迁移
-	// db.AutoMigrate(&UserInfo{})
-
-	// u1 := UserInfo{1, "七米", "男", "篮球"}
-	// u2 := UserInfo{2, "沙河捏砸", "女", "跳皮筋"}
-	// 创建记录
-	// db.Create(&u1)
-	// db.Create(&u2)
-	// 查询
-	var u UserInfo
-	db.First(&u, 2)
-	fmt.Printf("%#v\n", u)
-
-	var uu UserInfo
-	db.Find(&uu, "hobby=?", "篮球")
-	fmt.Printf("%#v\n", uu)
-
-	// 更新
-	// db.Model(&u).Update("hobby", "双色球")
-	// 删除
-	// db.Delete(&u)
+	fmt.Println(token)
+	claims, err := ParseToken(token)
+	if err != nil {
+		fmt.Println("parse failed")
+	}
+	fmt.Println(claims)
 }

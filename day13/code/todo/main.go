@@ -15,9 +15,9 @@ var db *gorm.DB
 // {"title":"杨俊不走神"}
 type Todo struct {
 	gorm.Model
-	Title  string `form:"title" json:"title"` // 待办事项名称
-	Status bool   `json:"status"`             // 是否完成的状态
-	Uid    int64  `gorm:"uid;not null;default:0"`
+	Title  string `form:"title" json:"title"`     // 待办事项名称
+	Status bool   `json:"status"`                 // 是否完成的状态
+	Uid    int64  `gorm:"uid;not null;default:0"` //关联用户
 }
 
 // Account 用户表
@@ -67,11 +67,11 @@ func main() {
 
 	// 注册路由，增删改查
 	// 添加待办事项
-	g := r.Group("/api/v1", authMiddleware)  // 给路由组添加auth中间件
+	g := r.Group("/api/v1", authMiddleware) // 给路由组添加auth中间件
 	{
 		g.POST("/todo", createTodoHandler)
 		g.PUT("/todo", updateTodoHandler)
-		g.GET("/todo", getTodoHandler)  // ? authMiddleware -> getTodoHandler
+		g.GET("/todo", getTodoHandler)           // ? authMiddleware -> getTodoHandler
 		g.DELETE("/todo/:id", deleteTodoHandler) // 路由参数
 	}
 

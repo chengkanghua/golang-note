@@ -21,7 +21,7 @@ type Todo struct {
 }
 
 func initDB() (err error) {
-	dsn := "root:root1234@tcp(127.0.0.1:13306)/db1?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:123@tcp(10.211.55.6:3306)/db1?charset=utf8mb4&parseTime=True&loc=Local"
 	// 初始化全局的db
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	return err
@@ -37,13 +37,13 @@ func main() {
 	db.AutoMigrate(&Todo{})
 
 	r := gin.Default()
-	// 加载静态文件
-	r.LoadHTMLFiles("./index.html")
-	r.Static("/static", "./static")
+	// 加载静态文件   前后端分离先注释
+	// r.LoadHTMLFiles("./index.html")
+	// r.Static("/static", "./static")
 
-	r.GET("/index", func(c *gin.Context) {
-		c.HTML(200, "index.html", nil)
-	})
+	// r.GET("/index", func(c *gin.Context) {
+	// 	c.HTML(200, "index.html", nil)
+	// })
 
 	// 注册路由，增删改查
 	// 添加待办事项

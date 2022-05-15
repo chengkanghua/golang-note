@@ -43,7 +43,7 @@ func loginHandler(c *gin.Context) {
 		}
 		c.JSON(http.StatusOK, Resp{
 			Code: 1,
-			Msg:  "服务端异常，请售后再试",
+			Msg:  "服务端异常，请稍后再试",
 		})
 		return
 	}
