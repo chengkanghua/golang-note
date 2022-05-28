@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+option go_package = "hello_client/pb;pb";
+
+package pb;
+
+message Request {
+    string name = 1;
+}
+
+message Response {
+    string reply = 1;
+}
+
+service hello {
+    rpc SayHello (Request) returns (Response){}
+    // 服务端流式RPC
+    // rpc ServerStreamHello (Request) returns (stream Response){}
+    // 客户端流式RPC
+    // rpc ClientStreamHello (stream Request) returns (Response){}
+    // 双向流式RPC
+    // rpc BudiStreamHello (stream Request) returns (stream Response){}
+    
+
+}
+
+

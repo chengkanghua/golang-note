@@ -9,5 +9,4 @@ type Result struct {
 	data []string
 }
 
-
-import 
+// import

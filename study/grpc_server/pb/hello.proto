@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option go_package = "grpc_server/pb";
+import "google/protobuf/timestamp.proto";
+
+package pb;
+
+service Greeter {
+    rpc SayHello (HelloRequest) returns (HelloReply) {}
+}
+
+message HelloRequest {
+    string name = 1;
+}
+
+message HelloReply {
+    string answer = 1;
+    google.protobuf.Timestamp ts = 2;
+
+}
+
+

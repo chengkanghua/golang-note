@@ -37,7 +37,7 @@ type Account struct {
 }
 
 func initDB() (err error) {
-	dsn := "root:root1234@tcp(127.0.0.1:3306)/db1?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:123@tcp(10.211.55.6:3306)/db1?charset=utf8mb4&parseTime=True&loc=Local"
 	// 初始化全局的db
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	return err
@@ -50,8 +50,8 @@ func main() {
 		panic(err)
 	}
 	// 表结构
-	// db.AutoMigrate(&Todo{})
-	// db.AutoMigrate(&Account{})
+	db.AutoMigrate(&Todo{})
+	db.AutoMigrate(&Account{})
 
 	r := gin.Default()
 	// 加载静态文件

@@ -1,0 +1,39 @@
+syntax = "proto3";
+package search;
+option go_package = "protobuf_demo/search";
+message SearchRequest {
+    string query = 1; // 1是编号，指的是消息中的第1位是query
+    int32 page_number = 2;
+    int32 result_per_page = 3;
+    // 在message内部定义枚举值
+    enum Corpus {
+        UNIVERSAL = 0;
+        WEB = 1;
+        IMAGES = 2;
+        LOCAL = 3;
+        NEWS = 4;
+        PRODUCTS = 5;
+        VIDEO = 6;
+      }
+    Corpus corpus = 4;
+}
+
+message Student {
+    reserved 2;  // 在这个message里面不要使用2这个编号了
+    string name = 1;
+    repeated int32 score = 3;  // []int32
+    int32 gender = 4;
+    bytes aim = 5;
+    map<string, int32> projects = 6;
+}
+
+// 定义一个 message SearchResponse 
+message SearchResponse {
+    repeated Result results = 1; // repeated 重复  Result 是message类型
+}
+  
+message Result {
+    string url = 1;
+    string title = 2;
+    repeated string snippets = 3;
+}

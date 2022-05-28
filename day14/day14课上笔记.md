@@ -134,7 +134,7 @@ gin框架默认用的就是validator做参数校验。
 
 
 
-https://pkg.go.dev/github.com/go-playground/validator#pkg-overview
+https://pkg.go.dev/github.com/go-playground/validator#pkg-overview。
 
 
 

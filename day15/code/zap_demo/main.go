@@ -43,6 +43,7 @@ func initLogger() {
 	}
 	// 创建zapcore
 	// core := zapcore.NewCore(encoder, fileWS, zapcore.DebugLevel)
+	// 文件和终端都写日志
 	core := zapcore.NewCore(encoder, zapcore.NewMultiWriteSyncer(fileWS, consoleWS), level)
 	// 利用core生成logger
 	logger = zap.New(core, zap.AddCaller())
@@ -89,7 +90,7 @@ func main() {
 	// 3. logLevel
 	// zapcore.InfoLevel.Enabled()
 	// s := "info" // 假设从配置文件读取了一个日志级别;作业
-	// level, err := zapcore.ParseLevel(s)
+	// level, err := zapcore.ParseLevel(s) // 从字符串中解析
 	// if err != nil {
 	// 	level = zapcore.InfoLevel
 	// }

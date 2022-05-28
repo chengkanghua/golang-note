@@ -1,0 +1,26 @@
+syntax = "proto3"; // 版本声明，使用Protocol Buffers v3版本
+
+option go_package = "grpc_server/pb";  // 指定go package名称；xx根据需要替换
+
+package pb; // 包名
+
+// 前提是你要把下载得到的 /Users/liwenzhou/Downloads/protoc-3.20.1-osx-x86_64/bin 目录加到环境变量里面去
+import "google/protobuf/timestamp.proto";
+// import "google/protobuf/any.proto";
+
+// 定义一个打招呼服务
+service Greeter {
+    // SayHello 方法
+    rpc SayHello (HelloRequest) returns (HelloReply) {}
+}
+
+// 包含人名的一个请求消息
+message HelloRequest {
+    string name = 1;
+}
+
+// 包含问候语的响应消息
+message HelloReply {
+    string answer = 1;
+    google.protobuf.Timestamp ts = 2;
+}

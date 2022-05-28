@@ -35,7 +35,7 @@ message Student {
 
 // 定义一个 message SearchResponse 
 message SearchResponse {
-    repeated Result results = 1;
+    repeated Result results = 1; // repeated 重复  Result 是message类型
 }
   
 message Result {

@@ -163,6 +163,10 @@ RPC（远程过程调用）调用的核心：
 
 官网：https://developers.google.com/protocol-buffers 
 
+翻译版：https://colobu.com/2017/03/16/Protobuf3-language-guide/
+
+
+
 目前主流的编码协议，大部分语言都支持。
 
 是二进制的协议，性能好。
@@ -231,7 +235,17 @@ protobuf 类似于:
 
 protoc ：解析proto文件用的
 
+- Mac Intel芯片 64位：https://github.com/protocolbuffers/protobuf/releases/download/v3.20.1/protoc-3.20.1-osx-x86_64.zip
+
 protoc-gen-go：生成go语言要用的插件
+
+```
+go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
+
+-------------------------GOPATH 路径要加入到环境变量里
+kanghuadeMacBook-Pro:protobuf_demo kanghua$ go env |grep GOPATH
+GOPATH="/Users/kanghua/go"
+```
 
 
 
@@ -243,6 +257,8 @@ https://www.liwenzhou.com/posts/Go/gRPC/
 
 
 
+HTTP/2 相比 1.0 有哪些重大改进？https://www.zhihu.com/question/34074946
+
 ### 安装
 
 #### 安装gRPC
@@ -253,7 +269,9 @@ go get -u google.golang.org/grpc
 
 
 
-#### 安装 protocol buffers v3
+#### 安装 protocol buffers v3    
+
+https://github.com/protocolbuffers/protobuf/releases/tag/v3.20.1 
 
 Windows 64位：https://github.com/protocolbuffers/protobuf/releases/download/v3.20.1/protoc-3.20.1-win64.zip
 

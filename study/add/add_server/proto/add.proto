@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+option go_package="add_server/proto;proto";
+
+package proto;
+
+// Req 请求服务的参数
+message Req {
+    int64 x = 1;
+    int64 y = 2;
+    Op op = 3;
+}
+
+enum Op {
+    _ = 0;
+    ADD = 1;
+    SUB = 2;
+}
+
+message Res {
+    int64 sum = 1;
+}
+
+service cal {
+    rpc Do(Req) returns(Res) {}
+}
+
+message OrderInfo {
+    int64 ID = 1;
+
+}

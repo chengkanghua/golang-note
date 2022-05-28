@@ -22,6 +22,9 @@ type App struct {
 func main() {
 	// 1.指定配置文件来源
 	viper.SetConfigFile("./config.yaml")
+	// viper.SetConfigName("config")
+	// viper.AddConfigPath("./conf")
+	// viper.SetConfigType("yaml")
 	// ...
 
 	// 2.从配置文件读取配置信息
@@ -34,6 +37,7 @@ func main() {
 	// 还可以在配置文件发生变化的时候 执行回调函数（自定义操作）
 	viper.OnConfigChange(callbackFunc) // 把我写的回调函数告诉viper
 
+	// 每隔3秒钟执行
 	// for t := range time.Tick(3 * time.Second) {
 	// 	fmt.Printf(
 	// 		"%s:%v\n",
@@ -70,6 +74,7 @@ func main() {
 	fmt.Println(viper.GetInt("port"))    // GetInt直接返回int类型（默认0）
 	fmt.Println(viper.Get("version"))
 	fmt.Println(viper.GetString("version"))
+	fmt.Println(viper.GetInt("app.node"))
 
 	r := gin.Default()
 
