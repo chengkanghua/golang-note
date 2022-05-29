@@ -1,0 +1,6 @@
+consul:
+  addr: 192.168.1.2:8500
+
+grpc_service:
+  address: 127.0.0.1
+  port: 8999

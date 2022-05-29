@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option go_package = "grpc_server/pb"; // golang 引用时指定的包名
+import "google/protobuf/timestamp.proto";
+//import "test2.proto";
+import "test2.proto";
+package pb; // 包名
+
+// 定义服务
+service Greeter {
+  // SayHello 方法
+  rpc SayHello (HelloRequest) returns (HelloResponse) {}
+}
+
+// 请求消息
+message HelloRequest {
+  string name = 1;
+}
+
+// 响应消息
+message HelloResponse {
+  string replay = 1;
+  google.protobuf.Timestamp time = 2;
+  test2.ErrorResult result = 3;
+}

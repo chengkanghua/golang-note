@@ -1,0 +1,9 @@
+
+
+mysql:
+  user: root
+  password: 123
+  host: 10.211.55.6
+  port: 3306
+  database: db1
+  config: charset=utf8mb4&parseTime=True&loc=Local

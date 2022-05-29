@@ -1,0 +1,9 @@
+syntax = "proto3"; 
+
+option go_package = "add_server/proto;proto";
+package  proto;
+
+
+message ErrorResult{
+    repeated string error = 1;
+}

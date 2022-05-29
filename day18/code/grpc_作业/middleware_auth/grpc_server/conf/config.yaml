@@ -1,0 +1,9 @@
+consul:
+  addr: 127.0.0.1:8500
+
+grpc_service:
+  address: 127.0.0.1
+  port: 8999
+
+showNum: 20
+
