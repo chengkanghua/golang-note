@@ -21,7 +21,7 @@ func doRPC(c pb.HelloClient) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	name := "阿平"
-
+	// 创建metadata和context.
 	md := metadata.Pairs("timestamp", time.Now().Format("2006-01-02 15:04:05"))
 	ctx = metadata.NewOutgoingContext(ctx, md)
 
@@ -149,7 +149,7 @@ func main() {
 			break
 		}
 	}
-	
+
 	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("grpc.Dial failed, err:%v\n", err)
