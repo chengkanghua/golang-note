@@ -50,21 +50,22 @@
    2. `go build`：编译程序
    3. ![image-20220109101055914](./day02课上代码和笔记.assets/image-20220109101055914.png)
    4. 一个项目下有多个源码文件时
-      1. ![image-20220109102307204](.\day02课上代码和笔记.assets\image-20220109102307204.png)
-
-   5. 编译时指定可执行文件的名称
-
+   
+1. ![image-20220109102307204](.\day02课上代码和笔记.assets\image-20220109102307204.png)
+  
+5. 编译时指定可执行文件的名称
+  
       1. `go build -o xxx.exe`(Windows)
-      2. `go build -o xxx`(Mac)
-
-   6. 交叉编译
-
-      1. 编译的时候是一个环境，执行程序的是另一个环境，例如：我在Windows下面写代码，然后编译一个在Linux环境执行的程序
-
-      2. ![image-20220109102646520](.\day02课上代码和笔记.assets\image-20220109102646520.png)
-
-         ​		https://www.liwenzhou.com/posts/Go/install_go_dev/#autoid-1-5-1
-
+   2. `go build -o xxx`(Mac)
+   
+6. 交叉编译
+  
+   1. 编译的时候是一个环境，执行程序的是另一个环境，例如：我在Windows下面写代码，然后编译一个在Linux环境执行的程序
+   
+   2. ![image-20220109102646520](.\day02课上代码和笔记.assets\image-20220109102646520.png)
+   
+      ​		https://www.liwenzhou.com/posts/Go/install_go_dev/#autoid-1-5-1
+   
          
 
 **有问题一定一定要问！不要害羞，学习是自己的。**
@@ -99,14 +100,35 @@ var c [10]string
 
 ```go
 var x = [3]int{1, 2, 3}
-var y = [...]bool{true, false, true}  // ... 表示让编译器自行推断数组长度
-var z = [100]int{99:1}     // 索引位置99的值为1
+var y = [...]bool{true, false, true}   // ... 表示让编译器自行推断数组长度
+var z = [100]int{99:1}             // 索引位置99的值为1
 var zz = [...]int{99:1}
+var cityArray = [3]string{"北京", "上海", "深圳"} //使用指定的初始值完成初始化
 ```
 
 #### 数组的遍历
 
-![image-20220109114437897](.\day02课上代码和笔记.assets\image-20220109114437897.png)
+
+
+```go
+var a = [...]string{"北京","上海","深圳"}
+// for i 索引遍历
+for i :=0; i < len(a);i++{
+  fmt.Println(a[i])
+}
+// for range 遍历
+for index,value := range a{
+  fmt.Println(index.value)
+}
+
+for _,v := range a{
+  fmt.Println(v)
+}
+
+
+```
+
+
 
 #### 多维数据
 
@@ -160,13 +182,38 @@ for i1, v1 := range xx {
 
 **赋值、函数传参都是拷贝，修改副本不影响原值。**
 
-![image-20220109123320558](.\day02课上代码和笔记.assets\image-20220109123320558.png)
+```go
+func modifyArray(x [3]int) {
+	x[0] = 100
+}
+
+func modifyArray2(x [3][2]int) {
+	x[2][0] = 100
+}
+func main() {
+	a := [3]int{10, 20, 30}
+	modifyArray(a) //在modify中修改的是a的副本x
+	fmt.Println(a) //[10 20 30]
+	b := [3][2]int{
+		{1, 1},
+		{1, 1},
+		{1, 1},
+	}
+	modifyArray2(b) //在modify中修改的是b的副本x
+	fmt.Println(b)  //[[1 1] [1 1] [1 1]]
+}
+
+```
+
+
 
 **Go语言中全部都是值拷贝（深拷贝），Go语言是通过传递指针实现修改原来的值。**（后面讲指针细说）
 
 #### 课后练习
 
-![image-20220109123831341](.\day02课上代码和笔记.assets\image-20220109123831341.png)
+1 求数组[1,3,5,7,8]所有元素的和
+
+2 找出数组中和为指定值的两个元素的下标，比如从数组[1，3，5，7，8]中找出和为8的两个元素的下标分别为(1,3)和(1,2)
 
 ```go
 // 练习1:求数组元素的和
@@ -289,6 +336,18 @@ func slice4() {
 	// 如果你确定一个切片中最终要存储的元素个数，那么你最好一次把内存申请到位
 ```
 
+#### 切片的赋值拷贝
+
+```go
+func main() {
+	s1 := make([]int, 3) //[0 0 0]
+	s2 := s1             //将s1直接赋值给s2，s1和s2共用一个底层数组
+	s2[0] = 100
+	fmt.Println(s1) //[100 0 0]
+	fmt.Println(s2) //[100 0 0]
+}
+```
+
 
 
 #### 切片的复制
@@ -317,7 +376,7 @@ func copyDemo() {
 	// var b = make([]int, 0, len(a))
 	b := make([]int, 0)
 	copy(b, a)     // 把切片a中的值拷贝到切片b中
-	fmt.Println(b) // ? 为什么？
+	fmt.Println(b) // [] ? 为什么？
 }
 ```
 
@@ -379,7 +438,7 @@ func deleteSlice(idx int) {
 	idx = 1
 	var s = []int{1, 2, 3}
 	s = append(s[:idx], s[idx+1:]...)
-	fmt.Println(s)
+	fmt.Println(s)  // [1 3]
 }
 ```
 
@@ -493,7 +552,7 @@ fmt.Println(ok)
 ```go
 // 元素类型是map的切片
 func sliceMapDemo1() {
-	// []int []string []map[string]int
+	// []int []string []map[string]int  切片的元素是map  3是切片长度
 	var mapSlice = make([]map[string]string, 3)
 
 	for index, value := range mapSlice {
@@ -532,13 +591,61 @@ func mapSliceDemo2() {
 ## 课后作业
 
 1. 把课上的代码自己敲一遍
+
 2. 下面两个题。
 
-![image-20220109184640634](.\day02课上代码和笔记.assets\image-20220109184640634.png)1
+   
 
+1. 写一个程序，统计一个字符串中每个单词出现的次数。比如：”how do you do”中how=1 do=2 you=1。
 
+```go
+// 写一个程序，统计一个字符串中每个单词出现的次数。
+	// 比如：”how do you do”中how=1 do=2 you=1。
+	s := "how do you do"
 
+	// 1.用map存数据，key是单词，value是单词出现的次数
+	// 2.将字符串分成一个一个的单词
+	// 3.把上一步得到的单词挨个存放到map里
+	// 4.遍历map打印结果
 
+	// 迎刃而解
+	var m map[string]int
+	m = make(map[string]int)
+	s1 := strings.Split(s, " ") // 切片
+	for _, v := range s1 {
+		// m[v] = 1  // m["do"] = 1
+		num := m[v]
+		m[v] = num + 1
+
+		// m[v]++
+
+		// if ok{
+		// 	m[v] = num+1
+		// }else{
+		// 	m[v] = 0+1
+		// }
+	}
+
+	for k, v := range m {
+		fmt.Println(k, v)
+	}
+```
+
+1. 观察下面代码，写出最终的打印结果。
+
+```go
+func main() {
+	type Map map[string][]int
+	m := make(Map)
+	s := []int{1, 2}
+	s = append(s, 3)
+	fmt.Printf("%+v\n", s) //[1 2 3]
+	m["q1mi"] = s
+	s = append(s[:1], s[2:]...)
+	fmt.Printf("%+v\n", s)         // [1 3]
+	fmt.Printf("%+v\n", m["q1mi"]) // [1 3 3 ] 底层共用一个内存地址
+}
+```
 
 
 
