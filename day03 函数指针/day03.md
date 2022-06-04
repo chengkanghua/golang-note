@@ -218,14 +218,59 @@ func f(x int, y string)(string, bool){
 1. 全局变量
 2. 局部变量
    1. 函数内定义的变量
+
    2. 语句块定义的变量
-      1. ![image-20220116150816071](day03.assets/image-20220116150816071.png)
 
+      ```go
+      func f14() {
+      	var m = map[string]int{
+      		"李硕": 100,
+      		"杨俊": 200,
+      	}
+      
+      	// v和ok只在if条件判断语句中有效
+      	if v, ok := m["波塞冬"]; ok {
+      		fmt.Println(v)
+      	}
+      	// v和ok在整个函数内有效
+      	v, ok := m["波塞冬"]
+      	if ok {
+      		fmt.Println(v)
+      	}
+      }
+      ```
 
+      
 
 只要以`type`关键字开头的都是定义类型。
 
-![image-20220116153047627](day03.assets/image-20220116153047627.png)
+```go
+type calculation func(int,int) int
+```
+
+上面语句定义了一个calculation类型，它是一种函数类型，这种函数接收两个int类型的参数并且返回一个int类型的返回值。
+
+简单来说，凡是满足这个条件的函数都是calculation类型的函数，例如下面的add和sub是calculation类型。
+
+```go
+func add(x,y int) int {
+  return x + y
+}
+
+func sub(x,y int) int {
+  return x - y
+}
+```
+
+add和sub都能赋值给calculation类型的变量。
+
+```go
+var c calculation 
+c = add
+
+```
+
+
 
 
 
@@ -246,7 +291,7 @@ func f15() {
 	fmt.Println(x == nil) // true
 	x = add               // 把add赋值给x
 	res := x(10, 20)      // ???
-	fmt.Println(res)
+	fmt.Println(res)      // 30
 
 	add(10, 20)
 }
@@ -406,6 +451,39 @@ func makeSuffixFunc(suffix string) func(string) string {
 #### 内置函数
 
 ##### panic和recover
+
+```go
+package main
+
+import "fmt"
+
+func funcA() {
+	fmt.Println("func A")
+}
+
+func funcB() {
+	defer func() {
+		err := recover()
+
+		if err != nil {
+			fmt.Println("recover in B")
+		}
+	}()
+	panic("panic in B")
+}
+
+func funcC() {
+	fmt.Println("func C")
+}
+func main() {
+	funcA()
+	funcB()
+	funcC()
+}
+
+```
+
+
 
 ### 指针
 

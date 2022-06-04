@@ -229,21 +229,29 @@
 3. 函数传参传指针
 
    ```go
-   func f1(name string){  // Go中函数传参都是值拷贝
-     name = "杨俊"
+   package main
+   
+   import "fmt"
+   
+   func f1(name string) { // Go中函数传参都是值拷贝
+   	name = "杨俊"
    }
    
-   name := "jade"
-   f1(name)  // 值拷贝，把"jade"拷贝给函数中的name变量
-   fmt.Println(name)  // ?
-   
-   func f2(name *string){  // Go中函数传参都是值拷贝
-     *name = "杨俊"
+   func f2(name *string) { // Go中函数传参都是值拷贝
+   	*name = "杨俊"
    }
-   f2(&name)  // 值拷贝，把内存地址拷贝给函数中的name变量
-   fmt.Println(name)  // ?
+   
+   func main() {
+   	name := "jade"
+	f1(name)          // 值拷贝，把"jade"拷贝给函数中的name变量
+   	fmt.Println(name) // ?  jade
+   
+   	f2(&name)         // 值拷贝，把内存地址拷贝给函数中的name变量
+   	fmt.Println(name) // ? 杨俊
+   }
+    
    ```
-
+   
    
 
 ### 上周作业
@@ -349,18 +357,30 @@ type rune = int32
 #### 类型显式转换
 
 ```go
-var x MyInt = 100
-fmt.Printf("x:%T\n", x)  // main.MyInt
+package main
 
-var y NewInt = 100
-fmt.Printf("y:%T\n", y)  // int
+import "fmt"
 
-x = MyInt(y)  // 类型强制转换
-y = NewInt(x) // 类型强制转换
+func main() {
+	// 类型定义
+	type MyInt int
+	// 类型别名
+	type NewInt = int
+	
+	var x MyInt = 100
+	fmt.Printf("x:%T\n", x) // main.MyInt
 
-f := 1.123
-i := int(f) // 浮点数可以强制转换成整数，但是会丢失精度
-fmt.Println(i)
+	var y NewInt = 100
+	fmt.Printf("y:%T\n", y) // int
+
+	x = MyInt(y)  // 类型强制转换
+	y = NewInt(x) // 类型强制转换
+
+	f := 1.123
+	i := int(f) // 浮点数可以强制转换成整数，但是会丢失精度
+	fmt.Println(i)
+}
+
 ```
 
 
@@ -534,6 +554,168 @@ func (p Person) dream(s string) {
 func (p *Person) guonian() {
 	p.age++
 }
+```
+
+
+
+```go
+package main
+
+import "fmt"
+
+type Person struct {
+	name string
+	age  int8
+}
+
+// Newperson 构造函数
+func NewPerson(name string, age int8) *Person {
+	return &Person{
+		name: name,
+		age:  age,
+	}
+}
+
+// Person做梦的方法
+func (p Person) Dream() {
+	fmt.Printf("%s的梦想是学好Go语言\n", p.name)
+}
+
+// 设置年龄  *Person 使用指针接收者
+func (p *Person) SetAge(newAge int8) {
+	p.age = newAge
+}
+
+// 设置年龄  Person 使用值接收者，对接收者的值复制了一份，无法修改接收者变量本身
+func (p Person) SetAge2(newAge int8) {
+	p.age = newAge
+}
+
+func main() {
+	p1 := NewPerson("小王子", 25)
+	p1.Dream()
+	fmt.Println(p1.age) //25
+	p1.SetAge(30)
+	fmt.Println(p1.age) //30
+
+}
+
+```
+
+#### 任意类型添加方法
+
+```go
+package main
+
+import "fmt"
+
+type MyInt int
+
+func (m MyInt) SayHello() {
+	fmt.Println("hello, 我是一个int")
+}
+func main() {
+	var m1 MyInt
+	m1.SayHello() // hello, 我是一个int
+	m1 = 100
+	fmt.Printf("%#v  %T \n", m1, m1) // 100 main.MyInt
+}
+
+```
+
+#### 结构体字段的可见性
+
+结构体中字段大写开头表示可公开访问，小写表示私有（仅在定义当前结构体的包中可访问）。
+
+#### 结构体与JSON序列化
+
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+)
+
+type Student struct {
+	ID     int
+	Gender string
+	Name   string
+}
+
+type Class struct {
+	Title    string
+	Students []*Student
+}
+
+func main() {
+	c := &Class{
+		Title:    "101",
+		Students: make([]*Student, 0, 200),
+	}
+	for i := 0; i < 10; i++ {
+		stu := &Student{
+			Name:   fmt.Sprintf("stu%02d", i),
+			Gender: "男",
+			ID:     i,
+		}
+		c.Students = append(c.Students, stu)
+	}
+	// JSON序列化： 结构体--》JSON格式的字符串
+	data, err := json.Marshal(c)
+	if err != nil {
+		fmt.Println("json marshal failed")
+		return
+	}
+	fmt.Printf("json:%s \n", data)
+
+	str := `{"Title":"101","Students":[{"ID":0,"Gender":"男","Name":"stu00"},{"ID":1,"Gender":"男","Name":"stu01"},{"ID":2,"Gender":"男","Name":"stu02"},{"ID":3,"Gender":"男","Name":"stu03"},{"ID":4,"Gender":"男","Name":"stu04"},{"ID":5,"Gender":"男","Name":"stu05"},{"ID":6,"Gender":"男","Name":"stu06"},{"ID":7,"Gender":"男","Name":"stu07"},{"ID":8,"Gender":"男","Name":"stu08"},{"ID":9,"Gender":"男","Name":"stu09"}]}`
+	c1 := Class{}
+	err = json.Unmarshal([]byte(str), &c1)
+	if err != nil {
+		fmt.Println("json unmarshal failed")
+	}
+	fmt.Printf("%#v \n", c1)
+	fmt.Println(c1.Title)
+	for index, student := range c1.Students {
+		fmt.Println(index, *student)
+	}
+
+}
+
+```
+
+
+
+#### 结构体Tag
+
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+)
+
+type Student struct {
+	ID     int    `json:"id"` //通过指定tag实现json序列化该字段时的key
+	Gender string // json 序列化默认使用字段名作为key
+	name   string // 小写字母开头  私有成员不能被json包访问到
+}
+
+func main() {
+	s1 := Student{
+		ID:     1,
+		Gender: "男",
+		name:   "沙河小王子",
+	}
+	data, err := json.Marshal(s1)
+	if err != nil {
+		fmt.Println("json marshal failed")
+	}
+	fmt.Printf("json str: %s \n", data)  //json str: {"id":1,"Gender":"男"} 
+}
+
 ```
 
 

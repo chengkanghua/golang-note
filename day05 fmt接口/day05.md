@@ -41,6 +41,7 @@ type f func()int
   - 结构体的内存对齐
 
 - 空结构体
+  
   - 空结构体不占空间
 - 结构体匿名字段
 - 结构体的嵌套
@@ -180,9 +181,202 @@ fmt.Println
 
 fmt.Scan
 
+```go
+func main() {
+	var (
+		name    string
+		age     int
+		married bool
+	)
+	fmt.Scan(&name, &age, &married)
+	fmt.Printf("扫描结果 name:%s age:%d married:%t \n", name, age, married)
+}
+```
+
+
+
 ### 文件操作
 
 https://www.liwenzhou.com/posts/Go/go_file/
+
+#### file.Read()
+
+```go
+package main
+
+import (
+	"fmt"
+	"io"
+	"os"
+)
+
+func main() {
+  	// 只读方式打开当前目录下的main.go文件
+	file, err := os.Open("./main.go")
+	if err != nil {
+		fmt.Println("open file failed,err;", err)
+		return
+	}
+	defer file.Close()
+	var content []byte
+	var tmp = make([]byte, 128)
+	for {
+		n, err := file.Read(tmp)
+		if err == io.EOF {
+			fmt.Println("文件读取完了")
+			break
+		}
+		if err != nil {
+			fmt.Println("read file failed ,err:", err)
+			return
+		}
+		content = append(content, tmp[:n]...)
+	}
+	fmt.Println(string(content))
+}
+
+```
+
+
+
+#### buffo 读取文件
+
+```go
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"io"
+	"os"
+)
+
+// bufio按行读取示例
+func main() {
+	file, err := os.Open("./xx.txt")
+	if err != nil {
+		fmt.Println("open file failed, err:", err)
+		return
+	}
+	defer file.Close()
+	reader := bufio.NewReader(file)
+	for {
+		line, err := reader.ReadString('\n') //注意是字符
+		if err == io.EOF {
+			if len(line) != 0 {
+				fmt.Println(line)
+			}
+			fmt.Println("文件读完了")
+			break
+		}
+		if err != nil {
+			fmt.Println("read file failed, err:", err)
+			return
+		}
+		fmt.Print(line)
+	}
+}
+
+```
+
+
+
+#### ioutil读取整个文件
+
+```go
+package main
+
+import (
+	"fmt"
+	"io/ioutil"
+)
+
+// ioutil.ReadFile读取整个文件
+func main() {
+	content, err := ioutil.ReadFile("./main.go")
+	if err != nil {
+		fmt.Println("read file failed, err:", err)
+		return
+	}
+	fmt.Println(string(content))
+}
+
+```
+
+#### Write 和 WriteString
+
+```go
+package main
+
+import (
+	"fmt"
+	"os"
+)
+
+func main() {
+	file, err := os.OpenFile("xx.txt", os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0666)
+	if err != nil {
+		fmt.Println("open file failed ,err:", err)
+		return
+	}
+	defer file.Close()
+	str := "hello 沙河\n"
+	file.Write([]byte(str))  // 直接写入切片数据
+	file.WriteString("hello 小王子") // 直接写入字符串数据
+
+}
+
+```
+
+#### bufio.NewWriter
+
+```go
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+)
+
+func main() {
+	file, err := os.OpenFile("xx.txt", os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0666)
+	if err != nil {
+		fmt.Println("open file failed ,err:", err)
+		return
+	}
+	defer file.Close()
+	writer := bufio.NewWriter(file)
+	for i := 0; i < 10; i++ {
+		writer.WriteString("hello 沙河 \n") //将数据写入缓存
+	}
+	writer.Flush() // 将缓存数据写入文件
+}
+
+```
+
+#### ioutil.WriteFile
+
+```go
+package main
+
+import (
+	"fmt"
+	"io/ioutil"
+)
+
+func main() {
+	str := "hello 沙河"
+	err := ioutil.WriteFile("./xx.txt", []byte(str), 0666)
+	if err != nil {
+		fmt.Println("writer file failed ,err:", err)
+		return
+	}
+}
+
+```
+
+
 
 
 
@@ -202,9 +396,33 @@ https://www.liwenzhou.com/posts/Go/12-interface/
 
 #### 接口定义
 
+```go
+type 接口类型名 interface{
+    方法名1( 参数列表1 ) 返回值列表1
+    方法名2( 参数列表2 ) 返回值列表2
+    …
+}
+```
+
 
 
 #### 实现接口的条件
+
+```go
+// Singer 接口
+type Singer interface {
+  Sing()
+}
+
+type Bird struct{}
+
+// Sing Bird类型的Sing方法    Bird实现了Singer接口
+func (b Bird) Sing(){
+  fmt.Println("汪汪汪")
+}
+```
+
+
 
 
 
