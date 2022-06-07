@@ -422,13 +422,82 @@ func (b Bird) Sing(){
 }
 ```
 
+#### 面向接口编程
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+type Payer interface {
+	Pay(int64)
+}
+type ZhiFuBao struct {
+	//支付宝
+}
+type WeChat struct {
+	//微信
+}
+
+func (z *ZhiFuBao) Pay(amount int64) {
+	fmt.Printf("使用支付宝付款%.2f 元 \n", float64(amount/100))
+}
+func (w *WeChat) Pay(amount int64) {
+	fmt.Printf("使用微信付款%.2f 元 \n", float64(amount/100))
+}
+func Checkout(obj Payer) {
+	//支付100
+	obj.Pay(100)
+}
+
+func main() {
+	Checkout(&ZhiFuBao{})
+	Checkout(&WeChat{})
+}
+
+```
+
 
 
 
 
 #### 接口组合
 
-![image-20220213171401485](day05.assets/image-20220213171401485.png)
+```go
+// src/io/io.go
+
+type Reader interface {
+	Read(p []byte) (n int, err error)
+}
+
+type Writer interface {
+	Write(p []byte) (n int, err error)
+}
+
+type Closer interface {
+	Close() error
+}
+
+// ReadWriter 是组合Reader接口和Writer接口形成的新接口类型
+type ReadWriter interface {
+	Reader
+	Writer
+}
+
+// ReadCloser 是组合Reader接口和Closer接口形成的新接口类型
+type ReadCloser interface {
+	Reader
+	Closer
+}
+
+// WriteCloser 是组合Writer接口和Closer接口形成的新接口类型
+type WriteCloser interface {
+	Writer
+	Closer
+}
+```
 
 
 
@@ -444,13 +513,113 @@ func (b Bird) Sing(){
 
 #### 空接口
 
+空接口是指没有定义任何方法的接口类型。因此任何类型都可以视为实现了空接口。也正是因为空接口类型的这个特性，空接口类型的变量可以存储任意类型的值。
+
+```go
+package main
+
+import "fmt"
+
+// 空接口
+
+// Any 不包含任何方法的空接口类型
+// type Any interface{}
+
+// Dog 狗结构体
+type Dog struct{}
+
+func main() {
+	// var x Any
+	var x interface{} // 声明一个空接口类型变量x
+	x = "你好"          // 字符串型
+	fmt.Printf("type:%T value:%v\n", x, x)
+	x = 100 // int型
+	fmt.Printf("type:%T value:%v\n", x, x)
+	x = true // 布尔型
+	fmt.Printf("type:%T value:%v\n", x, x)
+	x = Dog{} // 结构体类型
+	fmt.Printf("type:%T value:%v\n", x, x)
+}
+
+```
+
+
+
+空接口应用
+
+```go
+package main
+
+import "fmt"
+
+// 空接口作为函数参数
+func show(a interface{}) {
+	fmt.Printf("type:%T value:%v \n", a, a)
+}
+
+func main() {
+	//空接口作为map值
+	var studentInfo = make(map[string]interface{})
+	studentInfo["name"] = "沙河小王子"
+	studentInfo["age"] = 18
+	studentInfo["married"] = false
+	fmt.Println(studentInfo)
+}
+
+```
+
 
 
 #### 接口值
 
-
+由于接口类型的值可以是任意一个实现了该接口的类型值，所以接口值除了需要记录具体**值**之外，还需要记录这个值属于的**类型**。也就是说接口值由“类型”和“值”组成，鉴于这两部分会根据存入值的不同而发生变化，我们称之为接口的动态类型和动态值。
 
 #### 类型断言
+
+```go
+package main
+
+import "fmt"
+
+type Mover interface {
+	Move()
+}
+
+type Dog struct {
+	Name string
+}
+
+func (d Dog) Move() {
+	fmt.Println("狗会跑")
+}
+
+type Car struct {
+	Brand string
+}
+
+func (c Car) Move() {
+	fmt.Println("汽车会跑")
+}
+func main() {
+	var m Mover
+	m = &Dog{Name: "旺财"}
+	fmt.Printf("%T \n", m) // *main.Dog
+
+	m = new(Car)
+	fmt.Printf("%T \n", m) // *main.Car
+
+	var n Mover = &Dog{Name: "wang财"}
+	v, ok := n.(*Dog)
+	if ok {
+		fmt.Println("类型断言成功")
+		v.Name = "富贵"
+	} else {
+		fmt.Println("类型断言失败")
+	}
+
+}
+
+```
 
 
 

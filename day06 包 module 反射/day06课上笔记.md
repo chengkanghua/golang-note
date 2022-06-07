@@ -293,6 +293,125 @@ type error interface {
 
 
 
+#### 课堂代码
+
+go mod init error_demo
+
+main.go
+
+```go
+package main
+
+import (
+	"errors"
+	"fmt"
+)
+
+var (
+	ErrInvalidOp = errors.New("无效的操作")
+	ErrInvalidId = errors.New("无效的订单号")
+)
+
+type Order struct{}
+
+func queryOrder(id int64) (*Order, error) {
+	// 去数据库查询
+
+	if err := ConnectDB("jade", "111"); err != nil {
+		// return nil,errors.New("服务端异常")
+
+		// return nil, fmt.Errorf("连接数据库失败，err:%v", err)  // 1.13版本之前写法
+
+		// 既能拿到一个新的error,又不丢失原来的error
+		// 基于一个已有的从 error 包装得到一个新的 error
+
+		// 使用 fmt.Errorf 搭配特殊的格式化动词 %w
+		return nil, fmt.Errorf("连接数据库失败，err:%w", err)
+	}
+
+	// 连接数据库正常，但是没查到这个订单号对应的订单信息
+	if false {
+		return nil, ErrInvalidId
+	}
+
+	return &Order{}, nil
+}
+func main() {
+	// 调用标准库的Open函数打开文件
+	// f, err := os.Open("xx.txt")
+	// if err != nil { // error 接口类型默认零值为nil
+	// 	// 说明有错误
+	// 	fmt.Println(err) // 会调用 err.Error() 拿到 错误描述信息
+	// 	return
+	// }
+	// // 代码能执行到这里说明打开文件成功，f是个正经文件对象
+	// defer f.Close()
+
+	order, err := queryOrder(10086)
+	if err != nil {
+		fmt.Println(err == ErrConnFailed) // false
+
+		oErr := errors.Unwrap(err)               // 解包
+		fmt.Println(oErr, oErr == ErrConnFailed) // [db]数据库连接失败 true
+
+		if ok := errors.Is(err, ErrConnFailed); ok {
+			fmt.Println("是底层连接数据库失败了")
+		}
+
+		var nErr *DBError
+		if ok := errors.As(err, &nErr); ok {
+			// 自动做error的类型转换
+		}
+		fmt.Println(err)
+		if err == ErrInvalidId {
+			// 提示用户订单号输入有误
+			// log.Warning(err)
+		}
+
+	}
+
+	fmt.Println(order)
+}
+
+```
+
+db.go
+
+```go
+package main
+
+import "errors"
+
+var ErrConnFailed = errors.New("[db]数据库连接失败")
+
+type DBError struct {
+	msg string
+}
+
+func (e *DBError) Error() string {
+	return e.msg
+}
+
+func ConnectDB(username, password string) error {
+	if password != "123" {
+		return ErrConnFailed
+	}
+	if password == "123" {
+		return &DBError{
+			msg: "弱密码",
+		}
+	}
+	return nil
+}
+
+```
+
+
+
+
+
+
+
 ### 包和go module
 
 
@@ -306,8 +425,6 @@ type error interface {
 
 
 #### 标识符的可见性
-
-
 
 **标识符的首字母 什么时候大写，什么时候小写 都是有考量的！！！**
 
@@ -334,10 +451,6 @@ go get github.com/q1mi/hello
 ```bash
 go get github.com/q1mi/hello@v0.1.0
 ```
-
-
-
-
 
 默认下载到 `$gopath/pkg/mod/`目录下
 

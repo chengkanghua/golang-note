@@ -264,7 +264,84 @@ go-grpc-middleware ：https://github.com/grpc-ecosystem/go-grpc-middleware
 
 https://www.liwenzhou.com/posts/Go/consul/
 
+###  api注册服务
 
+```go
+package main
+
+import (
+	"log"
+
+	"github.com/hashicorp/consul/api"
+)
+
+// register2Consul 注册服务到consul
+func register2Consul() {
+	// 1. 连上consul
+	cfg := api.DefaultConfig()
+	cfg.Address = "10.211.55.6:8500"
+	client, err := api.NewClient(cfg)
+	if err != nil {
+		log.Fatalf("api.NewClient failed, err:%v\n", err)
+	}
+	// 2. 服务注册()
+	srv := &api.AgentServiceRegistration{
+		ID:      "hello-127.0.0.1-8974", // 服务名称-ip-端口
+		Name:    "hello",
+		Tags:    []string{"Beijing-hello", "hello", "q1mi"},
+		Address: "127.0.0.1",
+		Port:    8974,
+	}
+	client.Agent().ServiceRegister(srv)
+}
+
+func main() {
+	register2Consul()
+}
+
+```
+
+### api服务发现
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/hashicorp/consul/api"
+)
+
+func main() {
+	// register2Consul()
+	// 先查询一下服务注册中心，找到hello服务对应的地址
+	// 1. 连上consul
+	cfg := api.DefaultConfig()
+	cfg.Address = "10.211.55.6:8500"
+	consul, err := api.NewClient(cfg)
+	if err != nil {
+		log.Fatalf(" api.NewClient failed, err:%v\n", err)
+	}
+	// 2. 查询 hello 服务的所有可用地址
+	m, err := consul.Agent().ServicesWithFilter("Service==`hello`")
+	if err != nil {
+		log.Fatalf(" api.NewClient failed, err:%v\n", err)
+	}
+	fmt.Printf("%#v\n", m)
+	var addr string
+	for k, v := range m {
+		fmt.Printf("%v:%v ---\n", k, v)
+		addr = fmt.Sprintf("%v:%v \n", v.Address, v.Port)
+		fmt.Println(addr)
+		if len(addr) > 0 {
+			break
+		}
+	}
+
+}
+
+```
 
 
 
