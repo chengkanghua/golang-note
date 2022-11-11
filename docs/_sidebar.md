@@ -2,13 +2,13 @@
 - [Untitled](Untitled.md)
 
 - Day01go基础
-  - [20211226](day01go基础/20211226.md)
+  - [20211226](/golang-note/day01go基础/20211226.md)
 
 - Day02 数组切片Map
-  - [Day02课上代码和笔记](day02_数组切片map/day02课上代码和笔记.md)
+  - [Day02课上代码和笔记](/golang-note/day02_数组切片map/day02课上代码和笔记.md)
 
 - Day03 函数指针
-  - [Day03](day03_函数指针/day03.md)
+  - [Day03](/golang-note/day03_函数指针/day03.md)
 
 - Day04结构体
   - [Day04课上笔记](day04结构体/day04课上笔记.md)
